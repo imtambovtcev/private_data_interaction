@@ -34,5 +34,4 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html  # or your Sphinx build output directory
+          token: ${{ secrets.GITHUB_TOKEN }}
