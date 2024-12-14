@@ -1,6 +1,7 @@
-import streamlit as st
-import requests
 import os
+
+import requests
+import streamlit as st
 
 # Define API endpoints
 VALIDATE_API_URL = "http://127.0.0.1:8000/validate-csv/"

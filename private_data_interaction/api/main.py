@@ -1,8 +1,9 @@
-from fastapi import FastAPI, UploadFile, HTTPException, Form
 import csv
+import json
+
 import chardet
 import pandas as pd
-import json
+from fastapi import FastAPI, Form, HTTPException, UploadFile
 
 app = FastAPI()
 
