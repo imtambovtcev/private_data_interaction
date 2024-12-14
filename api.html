@@ -47,11 +47,11 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#base-url">Base URL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#endpoints">Endpoints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#validation-rules">Validation Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-options">Usage Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#drag-and-drop-interface">Drag-and-Drop Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-endpoints">API Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#drag-and-drop-example-in-streamlit">Drag-and-Drop Example in Streamlit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#example-interactions">Example Interactions</a></li>
 </ul>
 </li>
 </ul>
@@ -82,97 +82,168 @@
              
   <section id="api-documentation">
 <h1>API Documentation<a class="headerlink" href="#api-documentation" title="Link to this heading"></a></h1>
-<p>This document describes how to interact with the API for validating, analyzing, and submitting CSV files along with their metadata.</p>
-<section id="base-url">
-<h2>Base URL<a class="headerlink" href="#base-url" title="Link to this heading"></a></h2>
-<p>The API is hosted locally at:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">http://127.0.0.1:8000/</span>
-<span class="pre">`</span></code></p>
+<p>This guide explains how to use the API for validating, analyzing, and submitting CSV files along with metadata. You can interact with the API in two ways:</p>
+<ol class="arabic simple">
+<li><p><strong>Direct HTTP requests</strong> using tools like <cite>curl</cite>.</p></li>
+<li><p><strong>Drag-and-drop</strong> via the provided Streamlit-based user interface.</p></li>
+</ol>
+<section id="usage-options">
+<h2>Usage Options<a class="headerlink" href="#usage-options" title="Link to this heading"></a></h2>
+<p>You can use the API endpoints directly or through a user-friendly Streamlit interface.</p>
 </section>
-<section id="endpoints">
-<h2>Endpoints<a class="headerlink" href="#endpoints" title="Link to this heading"></a></h2>
-<p>### 1. Validate CSV File</p>
-<p><strong>Endpoint:</strong> <cite>/validate-csv/</cite></p>
-<p><strong>Method:</strong> <cite>POST</cite></p>
-<p><strong>Description:</strong> Validates the structure and content of a CSV file. Ensures all rows have a consistent number of columns.</p>
-<p><strong>Input:</strong>
-- <cite>file</cite>: A CSV file (must have a <cite>.csv</cite> extension).</p>
-<p><strong>Output:</strong>
-- Success: A JSON response with a success message.
-- Failure: A 400 error with a detailed error message.</p>
-<p><strong>Example:</strong>
-<code class="docutils literal notranslate"><span class="pre">`bash</span>
-<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">&quot;http://127.0.0.1:8000/validate-csv/&quot;</span> <span class="pre">-F</span> <span class="pre">&quot;file=&#64;example.csv&quot;</span>
-<span class="pre">`</span></code></p>
-<p>—</p>
-<p>### 2. Analyze CSV File</p>
-<p><strong>Endpoint:</strong> <cite>/analyze-csv/</cite></p>
-<p><strong>Method:</strong> <cite>POST</cite></p>
-<p><strong>Description:</strong> Analyzes the structure of a CSV file and provides information about its columns and data types.</p>
-<p><strong>Input:</strong>
-- <cite>file</cite>: A CSV file (must have a <cite>.csv</cite> extension).</p>
-<p><strong>Output:</strong>
-- Success: A JSON response containing column names and their inferred data types.
-- Failure: A 400 error with a detailed error message.</p>
-<p><strong>Example:</strong>
-<code class="docutils literal notranslate"><span class="pre">`bash</span>
-<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">&quot;http://127.0.0.1:8000/analyze-csv/&quot;</span> <span class="pre">-F</span> <span class="pre">&quot;file=&#64;example.csv&quot;</span>
-<span class="pre">`</span></code></p>
-<p>—</p>
-<p>### 3. Submit Dataset</p>
-<p><strong>Endpoint:</strong> <cite>/submit-dataset/</cite></p>
-<p><strong>Method:</strong> <cite>POST</cite></p>
-<p><strong>Description:</strong> Submits a dataset (CSV file) along with its metadata (JSON file). Validates both files and checks consistency between metadata and CSV columns.</p>
-<p><strong>Input:</strong>
-- <cite>csv_file</cite>: A CSV file (must have a <cite>.csv</cite> extension).
-- <cite>metadata_file</cite>: A JSON file containing metadata about the CSV file.</p>
-<p><strong>Output:</strong>
-- Success: A JSON response with details about the CSV and metadata columns.
-- Failure: A 400 error with a detailed error message.</p>
-<p><strong>Example:</strong>
-<code class="docutils literal notranslate"><span class="pre">`bash</span>
-<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">&quot;http://127.0.0.1:8000/submit-dataset/&quot;</span> <span class="pre">\</span>
-<span class="pre">-F</span> <span class="pre">&quot;csv_file=&#64;example.csv&quot;</span> <span class="pre">\</span>
-<span class="pre">-F</span> <span class="pre">&quot;metadata_file=&#64;example_metadata.json&quot;</span>
-<span class="pre">`</span></code></p>
-<p>—</p>
+<section id="drag-and-drop-interface">
+<h2>Drag-and-Drop Interface<a class="headerlink" href="#drag-and-drop-interface" title="Link to this heading"></a></h2>
+<p>The Streamlit-based interface provides an intuitive way to interact with the API:</p>
+<ol class="arabic simple">
+<li><p>Navigate to the UI (if hosted publicly or locally).</p></li>
+<li><p>Use the drag-and-drop functionality for:
+- <strong>CSV validation</strong>: Upload a file and see validation results.
+- <strong>CSV analysis</strong>: Upload a file to get details about its structure.
+- <strong>Dataset submission</strong>: Upload both a CSV and metadata file.</p></li>
+</ol>
+<p><strong>Example Workflow in the Interface:</strong></p>
+<ol class="arabic simple">
+<li><p>Open the app in your browser.</p></li>
+<li><p>Select or upload your CSV file.</p></li>
+<li><p>Review the results for validation, analysis, or submission.</p></li>
+</ol>
 </section>
-<section id="validation-rules">
-<h2>Validation Rules<a class="headerlink" href="#validation-rules" title="Link to this heading"></a></h2>
+<section id="api-endpoints">
+<h2>API Endpoints<a class="headerlink" href="#api-endpoints" title="Link to this heading"></a></h2>
+<p>For more control or automated interaction, you can directly use the API endpoints:</p>
+<p>### 1. Validate a CSV File
+<strong>URL:</strong> <cite>/validate-csv/</cite></p>
+<p><strong>Method:</strong> <cite>POST</cite></p>
+<p><strong>Purpose:</strong> Validates the structure of the provided CSV file.</p>
+<p><strong>Request:</strong></p>
 <ul class="simple">
-<li><p><strong>CSV Validation:</strong>
-- All rows must have the same number of columns.
-- The file must be properly encoded (auto-detected).</p></li>
-<li><p><strong>Metadata Validation:</strong>
-- Metadata must include <cite>dataset_name</cite>, <cite>description</cite>, and <cite>columns</cite>.
-- Columns in the metadata must match those in the CSV file.
-- Each column in the metadata must include a <cite>type</cite> field.</p></li>
+<li><p><strong>Headers:</strong> <cite>Content-Type: multipart/form-data</cite></p></li>
+<li><p><strong>Form Data:</strong>
+- <cite>file</cite>: A <cite>.csv</cite> file.</p></li>
 </ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><p><strong>Success (200):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CSV validation succeeded.&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;File is valid&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Failure (400):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CSV validation failed: Inconsistent row length at row 3&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/validate-csv/&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@correct_csv.csv&quot;</span>
+</pre></div>
+</div>
+<p>—</p>
+<p>### 2. Analyze a CSV File
+<strong>URL:</strong> <cite>/analyze-csv/</cite></p>
+<p><strong>Method:</strong> <cite>POST</cite></p>
+<p><strong>Purpose:</strong> Analyzes the structure of a CSV file and provides inferred data types for each column.</p>
+<p><strong>Request:</strong></p>
+<ul class="simple">
+<li><p><strong>Headers:</strong> <cite>Content-Type: multipart/form-data</cite></p></li>
+<li><p><strong>Form Data:</strong>
+- <cite>file</cite>: A <cite>.csv</cite> file.</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><p><strong>Success (200):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CSV file is valid&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">     </span><span class="p">{</span><span class="nt">&quot;column_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;data_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;int64&quot;</span><span class="p">},</span>
+<span class="w">     </span><span class="p">{</span><span class="nt">&quot;column_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;data_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">}</span>
+<span class="w">   </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Failure (400):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Inconsistent row length at row 3&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/analyze-csv/&quot;</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">&quot;file=@correct_csv.csv&quot;</span>
+</pre></div>
+</div>
+<p>—</p>
+<p>### 3. Submit a Dataset
+<strong>URL:</strong> <cite>/submit-dataset/</cite></p>
+<p><strong>Method:</strong> <cite>POST</cite></p>
+<p><strong>Purpose:</strong> Validates and submits a dataset (CSV file) along with its metadata (JSON file).</p>
+<p><strong>Request:</strong></p>
+<ul class="simple">
+<li><p><strong>Headers:</strong> <cite>Content-Type: multipart/form-data</cite></p></li>
+<li><p><strong>Form Data:</strong>
+- <cite>csv_file</cite>: The CSV file.
+- <cite>metadata_file</cite>: The metadata file in JSON format.</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<ul>
+<li><p><strong>Success (200):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dataset and metadata validation succeeded.&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;csv_columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+<span class="w">   </span><span class="nt">&quot;metadata_columns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Failure (400):</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Metadata validation failed: Missing &#39;columns&#39; field in metadata.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://127.0.0.1:8000/submit-dataset/&quot;</span><span class="w"> </span><span class="se">\</span>
+-F<span class="w"> </span><span class="s2">&quot;csv_file=@correct_csv.csv&quot;</span><span class="w"> </span><span class="se">\</span>
+-F<span class="w"> </span><span class="s2">&quot;metadata_file=@correct_csv_metadata.json&quot;</span>
+</pre></div>
+</div>
+<p>—</p>
+</section>
+<section id="drag-and-drop-example-in-streamlit">
+<h2>Drag-and-Drop Example in Streamlit<a class="headerlink" href="#drag-and-drop-example-in-streamlit" title="Link to this heading"></a></h2>
+<p>When using the Streamlit-based UI, the following actions are available:</p>
+<p>### Validating a CSV File</p>
+<ol class="arabic simple">
+<li><p>Select or upload a CSV file.</p></li>
+<li><p>View the validation result, which shows whether the file is valid or contains structural issues.</p></li>
+</ol>
+<p>### Analyzing a CSV File</p>
+<ol class="arabic simple">
+<li><p>Drag-and-drop a CSV file into the interface.</p></li>
+<li><p>Review the column names and their inferred data types.</p></li>
+</ol>
+<p>### Submitting a Dataset</p>
+<ol class="arabic simple">
+<li><p>Upload both a CSV and its metadata JSON file.</p></li>
+<li><p>Receive confirmation about successful submission or errors in the files.</p></li>
+</ol>
 </section>
 <section id="error-handling">
 <h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h2>
+<p>For all API endpoints, the following error codes are used:</p>
 <ul class="simple">
-<li><p>If a file fails validation, the API will return a 400 status code with a detailed error message.</p></li>
-<li><p>Ensure both files are properly formatted before submission.</p></li>
+<li><p><strong>400 Bad Request:</strong> For invalid input or failed validation. The <cite>detail</cite> field in the response explains the issue.</p></li>
+<li><p><strong>500 Internal Server Error:</strong> For unexpected errors during processing. Contact support with the request details if this occurs.</p></li>
 </ul>
-</section>
-<section id="example-interactions">
-<h2>Example Interactions<a class="headerlink" href="#example-interactions" title="Link to this heading"></a></h2>
-<p>### Validating a CSV File
-<code class="docutils literal notranslate"><span class="pre">`bash</span>
-<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">&quot;http://127.0.0.1:8000/validate-csv/&quot;</span> <span class="pre">-F</span> <span class="pre">&quot;file=&#64;valid_dataset.csv&quot;</span>
-<span class="pre">`</span></code></p>
-<p>### Analyzing a CSV File
-<code class="docutils literal notranslate"><span class="pre">`bash</span>
-<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">&quot;http://127.0.0.1:8000/analyze-csv/&quot;</span> <span class="pre">-F</span> <span class="pre">&quot;file=&#64;valid_dataset.csv&quot;</span>
-<span class="pre">`</span></code></p>
-<p>### Submitting a Dataset
-<code class="docutils literal notranslate"><span class="pre">`bash</span>
-<span class="pre">curl</span> <span class="pre">-X</span> <span class="pre">POST</span> <span class="pre">&quot;http://127.0.0.1:8000/submit-dataset/&quot;</span> <span class="pre">\</span>
-<span class="pre">-F</span> <span class="pre">&quot;csv_file=&#64;valid_dataset.csv&quot;</span> <span class="pre">\</span>
-<span class="pre">-F</span> <span class="pre">&quot;metadata_file=&#64;valid_metadata.json&quot;</span>
-<span class="pre">`</span></code></p>
 </section>
 </section>
 
