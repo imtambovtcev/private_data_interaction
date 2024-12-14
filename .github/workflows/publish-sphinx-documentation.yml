@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  # Specify Python version consistent with your matrix
+          python-version: '3.10'
 
       - name: Install Poetry
         run: |
@@ -28,18 +28,24 @@ jobs:
 
       - name: Install dependencies using Poetry
         run: |
-          poetry install  # This installs all dependencies including those in the dev group
+          poetry install
 
       - name: Build documentation
         run: |
-          cd docs  # or your Sphinx root directory
-          poetry run sphinx-build -b html . _build/html  # Using poetry run to use the environment
+          cd docs
+          poetry run sphinx-build -b html . _build/html || (echo "Build failed" && exit 1)
+
+      - name: List files for debugging
+        run: ls -l docs/_build/html/
 
       - name: Upload documentation artifact
         uses: actions/upload-artifact@v3
         with:
           name: documentation
           path: docs/_build/html/
+
+      - name: Wait for artifact upload
+        run: sleep 10
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
