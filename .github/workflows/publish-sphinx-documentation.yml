@@ -6,6 +6,10 @@ on:
       - main
       - github-documentation
 
+permissions:
+  id-token: write
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
