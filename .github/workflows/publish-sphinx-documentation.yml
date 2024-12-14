@@ -4,50 +4,52 @@ on:
   push:
     branches:
       - main
-      - github-documentation
+      - docs
 
 permissions:
   id-token: write
   contents: write
+  pages: write
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      # Set up Python environment
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
+      # Install Poetry
       - name: Install Poetry
-        run: |
-          pip install poetry
+        run: pip install poetry
 
-      - name: Install dependencies using Poetry
+      # Install dependencies using Poetry
+      - name: Install project dependencies
         run: |
-          poetry install
+          poetry install --no-interaction --no-root
 
-      - name: Build documentation
+      # Build Sphinx documentation
+      - name: Build Sphinx documentation
         run: |
           cd docs
-          poetry run sphinx-build -b html . _build/html || (echo "Build failed" && exit 1)
+          poetry run sphinx-build -b html . _build/html || (echo "Documentation build failed" && exit 1)
 
-      - name: List files for debugging
-        run: ls -l docs/_build/html/
-
-      - name: Upload documentation artifact
+      # Upload built documentation as an artifact
+      - name: Upload built documentation
         uses: actions/upload-artifact@v3
         with:
-          name: documentation
+          name: sphinx-documentation
           path: docs/_build/html/
 
-      - name: Wait for artifact upload
-        run: sleep 10
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+      # Deploy to GitHub Pages
+      - name: Deploy documentation to GitHub Pages
+        uses: actions/deploy-pages@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
