@@ -1,118 +1,184 @@
 API Documentation
-==================
+====================================
 
-This document describes how to interact with the API for validating, analyzing, and submitting CSV files along with their metadata.
+This guide explains how to use the API for validating, analyzing, and submitting CSV files along with metadata. You can interact with the API in two ways:
 
-Base URL
---------
-The API is hosted locally at:
+1. **Direct HTTP requests** using tools like `curl`.
+2. **Drag-and-drop** via the provided Streamlit-based user interface.
 
-```
-http://127.0.0.1:8000/
-```
+Usage Options
+-------------
+You can use the API endpoints directly or through a user-friendly Streamlit interface.
 
-Endpoints
----------
+Drag-and-Drop Interface
+-----------------------
+The Streamlit-based interface provides an intuitive way to interact with the API:
 
-### 1. Validate CSV File
+1. Navigate to the UI (if hosted publicly or locally).
+2. Use the drag-and-drop functionality for:
+   - **CSV validation**: Upload a file and see validation results.
+   - **CSV analysis**: Upload a file to get details about its structure.
+   - **Dataset submission**: Upload both a CSV and metadata file.
 
-**Endpoint:** `/validate-csv/`
+**Example Workflow in the Interface:**
 
-**Method:** `POST`
+1. Open the app in your browser.
+2. Select or upload your CSV file.
+3. Review the results for validation, analysis, or submission.
 
-**Description:** Validates the structure and content of a CSV file. Ensures all rows have a consistent number of columns.
+API Endpoints
+-------------
+For more control or automated interaction, you can directly use the API endpoints:
 
-**Input:**
-- `file`: A CSV file (must have a `.csv` extension).
-
-**Output:**
-- Success: A JSON response with a success message.
-- Failure: A 400 error with a detailed error message.
-
-**Example:**
-```bash
-curl -X POST "http://127.0.0.1:8000/validate-csv/" -F "file=@example.csv"
-```
-
----
-
-### 2. Analyze CSV File
-
-**Endpoint:** `/analyze-csv/`
+### 1. Validate a CSV File
+**URL:** `/validate-csv/`
 
 **Method:** `POST`
 
-**Description:** Analyzes the structure of a CSV file and provides information about its columns and data types.
+**Purpose:** Validates the structure of the provided CSV file.
 
-**Input:**
-- `file`: A CSV file (must have a `.csv` extension).
+**Request:**
 
-**Output:**
-- Success: A JSON response containing column names and their inferred data types.
-- Failure: A 400 error with a detailed error message.
+- **Headers:** `Content-Type: multipart/form-data`
+- **Form Data:**
+  - `file`: A `.csv` file.
+
+**Response:**
+
+- **Success (200):**
+
+  .. code-block:: json
+
+     {
+        "detail": "CSV validation succeeded.",
+        "message": "File is valid"
+     }
+
+- **Failure (400):**
+
+  .. code-block:: json
+
+     {
+        "detail": "CSV validation failed: Inconsistent row length at row 3"
+     }
 
 **Example:**
-```bash
-curl -X POST "http://127.0.0.1:8000/analyze-csv/" -F "file=@example.csv"
-```
+
+.. code-block:: bash
+
+   curl -X POST "http://127.0.0.1:8000/validate-csv/" -F "file=@correct_csv.csv"
 
 ---
 
-### 3. Submit Dataset
-
-**Endpoint:** `/submit-dataset/`
+### 2. Analyze a CSV File
+**URL:** `/analyze-csv/`
 
 **Method:** `POST`
 
-**Description:** Submits a dataset (CSV file) along with its metadata (JSON file). Validates both files and checks consistency between metadata and CSV columns.
+**Purpose:** Analyzes the structure of a CSV file and provides inferred data types for each column.
 
-**Input:**
-- `csv_file`: A CSV file (must have a `.csv` extension).
-- `metadata_file`: A JSON file containing metadata about the CSV file.
+**Request:**
 
-**Output:**
-- Success: A JSON response with details about the CSV and metadata columns.
-- Failure: A 400 error with a detailed error message.
+- **Headers:** `Content-Type: multipart/form-data`
+- **Form Data:**
+  - `file`: A `.csv` file.
+
+**Response:**
+
+- **Success (200):**
+
+  .. code-block:: json
+
+     {
+        "detail": "CSV file is valid",
+        "columns": [
+          {"column_name": "id", "data_type": "int64"},
+          {"column_name": "name", "data_type": "object"}
+        ]
+     }
+
+- **Failure (400):**
+
+  .. code-block:: json
+
+     {
+        "detail": "Inconsistent row length at row 3"
+     }
 
 **Example:**
-```bash
-curl -X POST "http://127.0.0.1:8000/submit-dataset/" \
--F "csv_file=@example.csv" \
--F "metadata_file=@example_metadata.json"
-```
+
+.. code-block:: bash
+
+   curl -X POST "http://127.0.0.1:8000/analyze-csv/" -F "file=@correct_csv.csv"
 
 ---
 
-Validation Rules
-----------------
-- **CSV Validation:**
-  - All rows must have the same number of columns.
-  - The file must be properly encoded (auto-detected).
-- **Metadata Validation:**
-  - Metadata must include `dataset_name`, `description`, and `columns`.
-  - Columns in the metadata must match those in the CSV file.
-  - Each column in the metadata must include a `type` field.
+### 3. Submit a Dataset
+**URL:** `/submit-dataset/`
+
+**Method:** `POST`
+
+**Purpose:** Validates and submits a dataset (CSV file) along with its metadata (JSON file).
+
+**Request:**
+
+- **Headers:** `Content-Type: multipart/form-data`
+- **Form Data:**
+  - `csv_file`: The CSV file.
+  - `metadata_file`: The metadata file in JSON format.
+
+**Response:**
+
+- **Success (200):**
+
+  .. code-block:: json
+
+     {
+        "detail": "Dataset and metadata validation succeeded.",
+        "csv_columns": ["id", "name"],
+        "metadata_columns": ["id", "name"]
+     }
+
+- **Failure (400):**
+
+  .. code-block:: json
+
+     {
+        "detail": "Metadata validation failed: Missing 'columns' field in metadata."
+     }
+
+**Example:**
+
+.. code-block:: bash
+
+   curl -X POST "http://127.0.0.1:8000/submit-dataset/" \
+   -F "csv_file=@correct_csv.csv" \
+   -F "metadata_file=@correct_csv_metadata.json"
+
+---
+
+Drag-and-Drop Example in Streamlit
+-----------------------------------
+When using the Streamlit-based UI, the following actions are available:
+
+### Validating a CSV File
+
+1. Select or upload a CSV file.
+2. View the validation result, which shows whether the file is valid or contains structural issues.
+
+### Analyzing a CSV File
+
+1. Drag-and-drop a CSV file into the interface.
+2. Review the column names and their inferred data types.
+
+### Submitting a Dataset
+
+1. Upload both a CSV and its metadata JSON file.
+2. Receive confirmation about successful submission or errors in the files.
 
 Error Handling
 --------------
-- If a file fails validation, the API will return a 400 status code with a detailed error message.
-- Ensure both files are properly formatted before submission.
+For all API endpoints, the following error codes are used:
 
-Example Interactions
---------------------
-### Validating a CSV File
-```bash
-curl -X POST "http://127.0.0.1:8000/validate-csv/" -F "file=@valid_dataset.csv"
-```
-
-### Analyzing a CSV File
-```bash
-curl -X POST "http://127.0.0.1:8000/analyze-csv/" -F "file=@valid_dataset.csv"
-```
-
-### Submitting a Dataset
-```bash
-curl -X POST "http://127.0.0.1:8000/submit-dataset/" \
--F "csv_file=@valid_dataset.csv" \
--F "metadata_file=@valid_metadata.json"
-```
+- **400 Bad Request:** For invalid input or failed validation. The `detail` field in the response explains the issue.
+- **500 Internal Server Error:** For unexpected errors during processing. Contact support with the request details if this occurs.
