@@ -1,0 +1,68 @@
+{
+    "dataset_name": "Patient Health Records Dataset",
+    "description": "This dataset contains health-related data of patients, including personal details, diagnoses, and health conditions.",
+    "columns": {
+        "Name": {
+            "type": "string",
+            "description": "Full name of the patient, including first and last name."
+        },
+        "Age": {
+            "type": "float",
+            "description": "Age of the patient in years, expressed with decimal precision."
+        },
+        "Gender": {
+            "type": "string",
+            "description": "Gender of the patient (e.g., Male, Female)."
+        },
+        "Birth Date": {
+            "type": "date",
+            "format": "YYYY-MM-DD",
+            "description": "Birth date of the patient in ISO format."
+        },
+        "Kennitala": {
+            "type": "string",
+            "is_standard_unique_identifier": true,
+            "description": "Icelandic national identification number for the patient, unique to each individual."
+        },
+        "Gout": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has been diagnosed with gout (True/False)."
+        },
+        "Obesity": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has been diagnosed with obesity (True/False)."
+        },
+        "Stress-Related Disorders": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has been diagnosed with stress-related disorders (True/False)."
+        },
+        "Cardiovascular Diseases": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has been diagnosed with cardiovascular diseases (True/False)."
+        },
+        "Eating Disorders": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has been diagnosed with eating disorders (True/False)."
+        },
+        "Addiction": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has been diagnosed with addiction (True/False)."
+        },
+        "Rare Genetic Disease": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has been diagnosed with a rare genetic disease (True/False)."
+        },
+        "Common Allergies": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has common allergies (True/False)."
+        },
+        "Hereditary Condition": {
+            "type": "boolean",
+            "description": "Indicates whether the patient has a hereditary condition (True/False)."
+        },
+        "patient_id": {
+            "type": "integer",
+            "description": "Internal medical institution identifier for the patient, unique to each individual."
+        }
+    }
+}

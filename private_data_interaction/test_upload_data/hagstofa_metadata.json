@@ -1,0 +1,36 @@
+{
+    "dataset_name": "Sample Personal Information Dataset",
+    "description": "This dataset contains personal details of individuals, including name, age, gender, birth date, identification number (kennitala), income, and email address.",
+    "columns": {
+        "Name": {
+            "type": "string",
+            "description": "Full name of the individual, including first and last name."
+        },
+        "Age": {
+            "type": "float",
+            "description": "Age of the individual in years, expressed with decimal precision."
+        },
+        "Gender": {
+            "type": "string",
+            "description": "Gender of the individual (e.g., Male, Female)."
+        },
+        "Birth Date": {
+            "type": "date",
+            "format": "YYYY-MM-DD",
+            "description": "Birth date of the individual in ISO format."
+        },
+        "Kennitala": {
+            "type": "string",
+            "is_standard_unique_identifier": true,
+            "description": "Icelandic national identification number for the individual, unique to each person."
+        },
+        "Income": {
+            "type": "float",
+            "description": "Yearly income of the individual in thousands ISK, expressed as a floating-point number."
+        },
+        "Email": {
+            "type": "string",
+            "description": "Email address of the individual."
+        }
+    }
+}

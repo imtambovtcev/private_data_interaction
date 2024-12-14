@@ -1,0 +1,18 @@
+{
+    "dataset_name": "Sample Dataset",
+    "description": "This dataset contains basic information about individuals, including their name, age, and city.",
+    "columns": {
+        "Name": {
+            "type": "string",
+            "description": "Full name of the individual."
+        },
+        "Age": {
+            "type": "integer",
+            "description": "Age of the individual in years."
+        },
+        "City": {
+            "type": "string",
+            "description": "City of residence of the individual."
+        }
+    }
+}
