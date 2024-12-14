@@ -4,52 +4,46 @@ on:
   push:
     branches:
       - main
-      - docs
-
-permissions:
-  id-token: write
-  contents: write
-  pages: write
 
 jobs:
-  build-and-deploy:
+  build-docs:
     runs-on: ubuntu-latest
-
     steps:
-      # Check out the repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # Step 1: Check out the code
+      - name: Check out the repository
+        uses: actions/checkout@v3
 
-      # Set up Python environment
-      - name: Set up Python
+      # Step 2: Set up Python
+      - name: Set up Python 3.x
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: 3.9
 
-      # Install Poetry
-      - name: Install Poetry
-        run: pip install poetry
-
-      # Install dependencies using Poetry
-      - name: Install project dependencies
+      # Step 3: Install dependencies
+      - name: Install dependencies
         run: |
-          poetry install --no-interaction --no-root
+          python -m pip install --upgrade pip
+          if [ -f docs/requirements.txt ]; then pip install -r docs/requirements.txt; fi
 
-      # Build Sphinx documentation
+      # Step 4: Build Sphinx documentation
       - name: Build Sphinx documentation
-        run: |
-          cd docs
-          poetry run sphinx-build -b html . _build/html || (echo "Documentation build failed" && exit 1)
+        uses: ammaraskar/sphinx-action@0.4
+        with:
+          docs-folder: "docs/"
+          build-command: "make html"
 
-      # Upload built documentation as an artifact
-      - name: Upload built documentation
+      # Step 5 (Optional): Upload built HTML as an artifact
+      - name: Upload documentation HTML
+        if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: sphinx-documentation
+          name: DocumentationHTML
           path: docs/_build/html/
 
-      # Deploy to GitHub Pages
-      - name: Deploy documentation to GitHub Pages
-        uses: actions/deploy-pages@v2
+      # Step 6 (Optional): Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html
